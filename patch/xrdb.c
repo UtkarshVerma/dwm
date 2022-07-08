@@ -52,6 +52,38 @@ loadxrdb()
 				XRDB_LOAD_FLOAT("dwm.alphas.scratchnorm.bg", alphas[SchemeScratchNorm][ColBg]);
 				XRDB_LOAD_FLOAT("dwm.alphas.scratchnorm.border", alphas[SchemeScratchNorm][ColBorder]);
 				#endif // RENAMED_SCRATCHPADS_PATCH
+				#if BAR_COLORFULTAGS_PATCH
+				XRDB_LOAD_FLOAT("dwm.alphas.tag1.fg", alphas[SchemeTag1][ColFg]);
+				XRDB_LOAD_FLOAT("dwm.alphas.tag1.bg", alphas[SchemeTag1][ColBg]);
+				XRDB_LOAD_FLOAT("dwm.alphas.tag1.border", alphas[SchemeTag1][ColBorder]);
+				XRDB_LOAD_FLOAT("dwm.alphas.tag2.fg", alphas[SchemeTag2][ColFg]);
+				XRDB_LOAD_FLOAT("dwm.alphas.tag2.bg", alphas[SchemeTag2][ColBg]);
+				XRDB_LOAD_FLOAT("dwm.alphas.tag2.border", alphas[SchemeTag2][ColBorder]);
+				XRDB_LOAD_FLOAT("dwm.alphas.tag3.fg", alphas[SchemeTag3][ColFg]);
+				XRDB_LOAD_FLOAT("dwm.alphas.tag3.bg", alphas[SchemeTag3][ColBg]);
+				XRDB_LOAD_FLOAT("dwm.alphas.tag3.border", alphas[SchemeTag3][ColBorder]);
+				XRDB_LOAD_FLOAT("dwm.alphas.tag4.fg", alphas[SchemeTag4][ColFg]);
+				XRDB_LOAD_FLOAT("dwm.alphas.tag4.bg", alphas[SchemeTag4][ColBg]);
+				XRDB_LOAD_FLOAT("dwm.alphas.tag4.border", alphas[SchemeTag4][ColBorder]);
+				XRDB_LOAD_FLOAT("dwm.alphas.tag5.fg", alphas[SchemeTag5][ColFg]);
+				XRDB_LOAD_FLOAT("dwm.alphas.tag5.bg", alphas[SchemeTag5][ColBg]);
+				XRDB_LOAD_FLOAT("dwm.alphas.tag5.border", alphas[SchemeTag5][ColBorder]);
+				XRDB_LOAD_FLOAT("dwm.alphas.tag6.fg", alphas[SchemeTag6][ColFg]);
+				XRDB_LOAD_FLOAT("dwm.alphas.tag6.bg", alphas[SchemeTag6][ColBg]);
+				XRDB_LOAD_FLOAT("dwm.alphas.tag6.border", alphas[SchemeTag6][ColBorder]);
+				XRDB_LOAD_FLOAT("dwm.alphas.tag7.fg", alphas[SchemeTag7][ColFg]);
+				XRDB_LOAD_FLOAT("dwm.alphas.tag7.bg", alphas[SchemeTag7][ColBg]);
+				XRDB_LOAD_FLOAT("dwm.alphas.tag7.border", alphas[SchemeTag7][ColBorder]);
+				XRDB_LOAD_FLOAT("dwm.alphas.tag8.fg", alphas[SchemeTag8][ColFg]);
+				XRDB_LOAD_FLOAT("dwm.alphas.tag8.bg", alphas[SchemeTag8][ColBg]);
+				XRDB_LOAD_FLOAT("dwm.alphas.tag8.border", alphas[SchemeTag8][ColBorder]);
+				XRDB_LOAD_FLOAT("dwm.alphas.tag9.fg", alphas[SchemeTag9][ColFg]);
+				XRDB_LOAD_FLOAT("dwm.alphas.tag9.bg", alphas[SchemeTag9][ColBg]);
+				XRDB_LOAD_FLOAT("dwm.alphas.tag9.border", alphas[SchemeTag9][ColBorder]);
+				XRDB_LOAD_FLOAT("dwm.alphas.layout.fg", alphas[SchemeLayout][ColFg]);
+				XRDB_LOAD_FLOAT("dwm.alphas.layout.bg", alphas[SchemeLayout][ColBg]);
+				XRDB_LOAD_FLOAT("dwm.alphas.layout.border", alphas[SchemeLayout][ColBorder]);
+				#endif // BAR_COLORFULTAGS_PATCH
 				#if BAR_FLEXWINTITLE_PATCH
 				XRDB_LOAD_FLOAT("dwm.alphas.flexactttb.fg", alphas[SchemeFlexActTTB][ColFg]);
 				XRDB_LOAD_FLOAT("dwm.alphas.flexactttb.bg", alphas[SchemeFlexActTTB][ColBg]);
