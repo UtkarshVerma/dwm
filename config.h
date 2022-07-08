@@ -84,7 +84,7 @@ static const int statusmon               = 0;
 static const int statusmon               = 'A';
 #endif // BAR_STATUSALLMONS_PATCH | BAR_STATICSTATUS_PATCH
 #if BAR_STATUSPADDING_PATCH
-static const int horizpadbar             = 0;   /* horizontal padding for statusbar */
+static const int horizpadbar             = 10;   /* horizontal padding for statusbar */
 static const int vertpadbar              = 20;   /* vertical padding for statusbar */
 #endif // BAR_STATUSPADDING_PATCH
 #if BAR_STATUSBUTTON_PATCH
@@ -1152,7 +1152,7 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_f,          fullscreen,             {0} },
 	#endif // FULLSCREEN_PATCH
 	#if STICKY_PATCH
-	{ MODKEY|ShiftMask,             XK_s,          togglesticky,           {0} },
+	{ MODKEY,                       XK_period,     togglesticky,           {0} },
 	#endif // STICKY_PATCH
 	#if SCRATCHPAD_ALT_1_PATCH
 	{ MODKEY,                       XK_minus,      scratchpad_show,        {0} },
