@@ -523,7 +523,7 @@ static const Rule rules[] = {
 	RULE(.class = "Safeeyes", .isfloating = 1)
 	RULE(.class = "Brave-browser", .tags = TAG(1))
 	RULE(.class = "Code", .tags = TAG(2))
-	RULE(.title = "Spotify", .tags = TAG(8))
+	RULE(.class = "Spotify", .tags = TAG(8))
 	RULE(.class = "discord", .tags = TAG(9))
     RULE(.title = "wlroots - X11-1", .tags = TAG(2))
 
