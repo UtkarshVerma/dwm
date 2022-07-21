@@ -1328,7 +1328,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Escape,     spawn,                  SHCMD("sysact")},
 	{ MODKEY,                       XK_w,          spawn,                  SHCMD("$BROWSER") },
 	{ MODKEY|ShiftMask,             XK_w,          spawn,                  SHCMD("terminal -e nmtui") },
-	{ MODKEY,                       XK_e,          spawn,                  SHCMD("terminal -e tmux new-session nnn -a -P p") },
+	{ MODKEY,                       XK_e,          spawn,                  SHCMD("terminal -e $FILE_MANAGER") },
 	{ MODKEY|ShiftMask,             XK_e,          spawn,                  SHCMD("terminal -e htop") },
 
 	// Music
