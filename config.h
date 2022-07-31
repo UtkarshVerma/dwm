@@ -1351,10 +1351,10 @@ static Key keys[] = {
 	{ MODKEY,                       XK_F4,         spawn,                  SHCMD("terminal -e pulsemixer; pkill -RTMIN+22 $STATUSBAR") },
 	{ MODKEY,                       XK_F11,        spawn,                  SHCMD("mpv --no-cache --no-osc --no-input-default-bindings --profile=low-latency --input-conf=/dev/null --title=webcam $(ls /dev/video[0,2,4,6,8] | tail -n 1)") },
 
-    { MODKEY|Mod1Mask,              XK_Up,         spawn,                  SHCMD("light -A 5") },
-    { MODKEY|Mod1Mask,              XK_Down,       spawn,                  SHCMD("light -U 5") },
-    { MODKEY|Mod1Mask,              XK_Right,      spawn,                  SHCMD("asusctl -n") },
-    { MODKEY|Mod1Mask,              XK_Left,       spawn,                  SHCMD("asusctl -p") },
+    { MODKEY|ControlMask,           XK_Up,         spawn,                  SHCMD("light -A 5") },
+    { MODKEY|ControlMask,           XK_Down,       spawn,                  SHCMD("light -U 5") },
+    { MODKEY|ControlMask,           XK_Right,      spawn,                  SHCMD("asusctl -n") },
+    { MODKEY|ControlMask,           XK_Left,       spawn,                  SHCMD("asusctl -p") },
 
 	#define PAMIXER(cmd) SHCMD("pamixer " cmd "; pkill -RTMIN+22 $STATUSBAR")
 	{ 0,                            XF86XK_AudioMute,         spawn,       PAMIXER("-t") },
