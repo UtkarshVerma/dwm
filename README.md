@@ -1,4 +1,4 @@
-This dwm 6.3 (8b48e30, 2022-04-26) side project has a different take on dwm patching. It uses preprocessor directives to decide whether or not to include a patch during build time. Essentially this means that this build, for better or worse, contains both the patched _and_ the original code. The aim being that you can select which patches to include and the build will contain that code and nothing more. Due to the complexity of some of the patches dwm-flexipatch has diverged from mainstream dwm by making some core patches non-optional for maintenance reasons. For the classic dwm-flexipatch build refer to branch [dwm-flexipatch-1.0](https://github.com/bakkeby/dwm-flexipatch/tree/dwm-flexipatch-1.0).
+This dwm 6.3 (84d7322, 2022-08-18) side project has a different take on dwm patching. It uses preprocessor directives to decide whether or not to include a patch during build time. Essentially this means that this build, for better or worse, contains both the patched _and_ the original code. The aim being that you can select which patches to include and the build will contain that code and nothing more. Due to the complexity of some of the patches dwm-flexipatch has diverged from mainstream dwm by making some core patches non-optional for maintenance reasons. For the classic dwm-flexipatch build refer to branch [dwm-flexipatch-1.0](https://github.com/bakkeby/dwm-flexipatch/tree/dwm-flexipatch-1.0).
 
 For example to include the `alpha` patch then you would only need to flip this setting from 0 to 1 in [patches.h](https://github.com/bakkeby/dwm-flexipatch/blob/master/patches.def.h):
 ```c
@@ -19,6 +19,9 @@ Browsing patches? There is a [map of patches](https://coggle.it/diagram/X9IiSSM6
 
 ### Changelog:
 
+2022-08-12 - Added the nametag patch
+
+2022-08-02 - Added the bidi patch
 
 2022-07-05 - Added the tagpreview patch
 
@@ -287,6 +290,9 @@ Browsing patches? There is a [map of patches](https://coggle.it/diagram/X9IiSSM6
    - [bartabgroups](https://dwm.suckless.org/patches/bartabgroups/)
       - turns the titlebar area into a mfact-respecting tab-bar showing each client's title
 
+   - [bidi](https://dwm.suckless.org/patches/bidi/)
+      - adds proper support for Right-To-Left (RTL) languages (such as Farsi, Arabic or Hebrew)
+
    - [center](https://dwm.suckless.org/patches/center/)
       - adds an iscentered rule to automatically center clients on the current monitor
 
@@ -523,6 +529,9 @@ Browsing patches? There is a [map of patches](https://coggle.it/diagram/X9IiSSM6
 
    - [movestack](https://dwm.suckless.org/patches/movestack/)
       - allows you to move clients around in the stack and swap them with the master
+
+   - [nametag](https://dwm.suckless.org/patches/nametag/)
+      - allows the names of tags to be changed during runtime
 
    - [netclientliststacking](https://github.com/bakkeby/patches/wiki/netclientliststacking)
       - adds support for the \_NET\_CLIENT\_LIST\_STACKING atom, needed by certain applications
