@@ -55,6 +55,10 @@
 #include <pango/pango.h>
 #endif // BAR_PANGO_PATCH
 
+#if RESTARTSIG_PATCH
+#include <poll.h>
+#endif // RESTARTSIG_PATCH
+
 #if XKB_PATCH
 #include <X11/XKBlib.h>
 #endif // XKB_PATCH
@@ -831,7 +835,11 @@ static Atom clientatom[ClientLast];
 #if ON_EMPTY_KEYS_PATCH
 static int isempty = 0;
 #endif // ON_EMPTY_KEYS_PATCH
+#if RESTARTSIG_PATCH
+static volatile sig_atomic_t running = 1;
+#else
 static int running = 1;
+#endif // RESTARTSIG_PATCH
 static Cur *cursor[CurLast];
 static Clr **scheme;
 static Display *dpy;
@@ -3198,6 +3206,30 @@ run(void)
 		}
 	}
 }
+#elif RESTARTSIG_PATCH
+void
+run(void)
+{
+	XEvent ev;
+	XSync(dpy, False);
+	/* main event loop */
+	while (running) {
+		struct pollfd pfd = {
+			.fd = ConnectionNumber(dpy),
+			.events = POLLIN,
+		};
+		int pending = XPending(dpy) > 0 || poll(&pfd, 1, -1) > 0;
+
+		if (!running)
+			break;
+		if (!pending)
+			continue;
+
+		XNextEvent(dpy, &ev);
+		if (handler[ev.type])
+			handler[ev.type](&ev); /* call handler */
+	}
+}
 #else
 void
 run(void)
@@ -3220,7 +3252,7 @@ run(void)
 			handler[ev.type](&ev); /* call handler */
 	}
 }
-#endif // IPC_PATCH
+#endif // IPC_PATCH | RESTARTSIG_PATCH
 
 void
 scan(void)
@@ -3933,10 +3965,6 @@ spawn(const Arg *arg)
 	#if RIODRAW_PATCH
 	pid_t pid;
 	#endif // RIODRAW_PATCH
-	#if !NODMENU_PATCH
-	if (arg->v == dmenucmd)
-		dmenumon[0] = '0' + selmon->num;
-	#endif // NODMENU_PATCH
 
 	#if RIODRAW_PATCH
 	if ((pid = fork()) == 0)
@@ -5056,7 +5084,6 @@ main(int argc, char *argv[])
 		else if (!strcmp("-sf", argv[i])) /* selected foreground color */
 			colors[SchemeSel][0] = argv[++i];
 		#endif // !BAR_VTCOLORS_PATCH
-		#if NODMENU_PATCH
 		else if (!strcmp("-df", argv[i])) /* dmenu font */
 			dmenucmd[2] = argv[++i];
 		else if (!strcmp("-dnb", argv[i])) /* dmenu normal background color */
@@ -5067,18 +5094,6 @@ main(int argc, char *argv[])
 			dmenucmd[8] = argv[++i];
 		else if (!strcmp("-dsf", argv[i])) /* dmenu selected foreground color */
 			dmenucmd[10] = argv[++i];
-		#else
-		else if (!strcmp("-df", argv[i])) /* dmenu font */
-			dmenucmd[4] = argv[++i];
-		else if (!strcmp("-dnb", argv[i])) /* dmenu normal background color */
-			dmenucmd[6] = argv[++i];
-		else if (!strcmp("-dnf", argv[i])) /* dmenu normal foreground color */
-			dmenucmd[8] = argv[++i];
-		else if (!strcmp("-dsb", argv[i])) /* dmenu selected background color */
-			dmenucmd[10] = argv[++i];
-		else if (!strcmp("-dsf", argv[i])) /* dmenu selected foreground color */
-			dmenucmd[12] = argv[++i];
-		#endif // NODMENU_PATCH
 		else die(help());
 	#else
 	if (argc == 2 && !strcmp("-v", argv[1]))
