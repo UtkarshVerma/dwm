@@ -130,7 +130,7 @@ static void (*bartabmonfns[])(Monitor *) = { NULL /* , customlayoutfn */ };
 #if BAR_PANGO_PATCH
 static const char font[]                 = "monospace 10";
 #else
-static const char *fonts[]               = { "monospace:size=12", "icons:size=12" };
+static const char *fonts[]               = { "monospace:size=12", "icons:size=13" };
 #endif // BAR_PANGO_PATCH
 // static const char dmenufont[]            = "monospace:size=10";
 
@@ -506,26 +506,33 @@ static const Rule rules[] = {
 	 *	_NET_WM_WINDOW_TYPE(ATOM) = wintype
 	 */
 	// Rules assume CENTER_PATCH is enabled
-	RULE(.wintype = WTYPE "DIALOG", .isfloating = 1, .iscentered = 1)
+	RULE(.wintype = WTYPE "DIALOG", .isfloating = 1)
 	RULE(.wintype = WTYPE "UTILITY", .isfloating = 1)
 	RULE(.wintype = WTYPE "TOOLBAR", .isfloating = 1)
 	RULE(.wintype = WTYPE "SPLASH", .isfloating = 1)
+	#if WINDOWROLERULE_PATCH
+	RULE(.role = "pop-up", .isfloating = 1)
+	#endif // WINDOWROLERULE_PATCH
 
 	#if SWALLOW_PATCH
 	RULE(.class = "St", .isterminal = 1)
 	RULE(.class = "Alacritty", .isterminal = 1)
 	RULE(.title = "Event Tester", .noswallow = 1)
-	RULE(.title = "NoiseTorch", .isfloating = 1, .iscentered = 1, .noswallow = 1)
-    RULE(.class = "Dragon", .isfloating = 1, .iscentered = 1, .noswallow = 1)
-    RULE(.class = "ClipGrab", .isfloating = 1, .iscentered = 1, .noswallow = 1)
-    RULE(.class = "Onboard", .isfloating = 1, .iscentered = 1, .noswallow = 1)
+	RULE(.title = "NoiseTorch", .isfloating = 1, .noswallow = 1)
+	RULE(.class = "Dragon", .isfloating = 1, .noswallow = 1)
+	RULE(.class = "ClipGrab", .isfloating = 1, .noswallow = 1)
+	RULE(.class = "Onboard", .isfloating = 1, .noswallow = 1)
 	#endif // SWALLOW_PATCH
 	RULE(.class = "Safeeyes", .isfloating = 1)
+	#if WINDOWROLERULE_PATCH
+	RULE(.class = "Brave-browser", .role = "browser", .tags = TAG(1))
+	#else
 	RULE(.class = "Brave-browser", .tags = TAG(1))
+	#endif
 	RULE(.class = "Code", .tags = TAG(2))
 	RULE(.title = "Spotify", .tags = TAG(8))
 	RULE(.class = "discord", .tags = TAG(9))
-    RULE(.title = "wlroots - X11-1", .tags = TAG(2))
+	RULE(.title = "wlroots - X11-1", .tags = TAG(2))
 
 	#if RENAMED_SCRATCHPADS_PATCH
 	RULE(.instance = "spterm", .scratchkey = '~', .isfloating = 1, .iscentered = 1)
@@ -1351,10 +1358,10 @@ static Key keys[] = {
 	{ MODKEY,                       XK_F4,         spawn,                  SHCMD("terminal -e pulsemixer; pkill -RTMIN+22 $STATUSBAR") },
 	{ MODKEY,                       XK_F11,        spawn,                  SHCMD("mpv --no-cache --no-osc --no-input-default-bindings --profile=low-latency --input-conf=/dev/null --title=webcam $(ls /dev/video[0,2,4,6,8] | tail -n 1)") },
 
-    { MODKEY|ControlMask,           XK_Up,         spawn,                  SHCMD("light -A 5") },
-    { MODKEY|ControlMask,           XK_Down,       spawn,                  SHCMD("light -U 5") },
-    { MODKEY|ControlMask,           XK_Right,      spawn,                  SHCMD("asusctl -n") },
-    { MODKEY|ControlMask,           XK_Left,       spawn,                  SHCMD("asusctl -p") },
+	{ MODKEY|ControlMask,           XK_Up,         spawn,                  SHCMD("light -A 5") },
+	{ MODKEY|ControlMask,           XK_Down,       spawn,                  SHCMD("light -U 5") },
+	{ MODKEY|ControlMask,           XK_Right,      spawn,                  SHCMD("asusctl -n") },
+	{ MODKEY|ControlMask,           XK_Left,       spawn,                  SHCMD("asusctl -p") },
 
 	#define PAMIXER(cmd) SHCMD("pamixer " cmd "; pkill -RTMIN+22 $STATUSBAR")
 	{ 0,                            XF86XK_AudioMute,         spawn,       PAMIXER("-t") },
