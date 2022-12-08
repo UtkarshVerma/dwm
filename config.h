@@ -130,7 +130,7 @@ static void (*bartabmonfns[])(Monitor *) = { NULL /* , customlayoutfn */ };
 #if BAR_PANGO_PATCH
 static const char font[]                 = "monospace 10";
 #else
-static const char *fonts[]               = { "monospace:size=12", "icons:size=13" };
+static const char *fonts[]               = { "monospace:size=12", "emoji:size=12", "icons:size=13" };
 #endif // BAR_PANGO_PATCH
 // static const char dmenufont[]            = "monospace:size=10";
 
@@ -505,25 +505,24 @@ static const Rule rules[] = {
 	 *	WM_WINDOW_ROLE(STRING) = role
 	 *	_NET_WM_WINDOW_TYPE(ATOM) = wintype
 	 */
-	// Rules assume CENTER_PATCH is enabled
-	RULE(.wintype = WTYPE "DIALOG", .isfloating = 1)
-	RULE(.wintype = WTYPE "UTILITY", .isfloating = 1)
-	RULE(.wintype = WTYPE "TOOLBAR", .isfloating = 1)
-	RULE(.wintype = WTYPE "SPLASH", .isfloating = 1)
+	RULE(.wintype = WTYPE "DIALOG", .isfloating = 1, .iscentered = 1)
+	RULE(.wintype = WTYPE "UTILITY", .isfloating = 1, .iscentered = 1)
+	RULE(.wintype = WTYPE "TOOLBAR", .isfloating = 1, .iscentered = 1)
+	RULE(.wintype = WTYPE "SPLASH", .isfloating = 1, .iscentered = 1)
 	#if WINDOWROLERULE_PATCH
-	RULE(.role = "pop-up", .isfloating = 1)
+	RULE(.role = "pop-up", .isfloating = 1, .iscentered = 1)
 	#endif // WINDOWROLERULE_PATCH
 
 	#if SWALLOW_PATCH
 	RULE(.class = "St", .isterminal = 1)
 	RULE(.class = "Alacritty", .isterminal = 1)
 	RULE(.title = "Event Tester", .noswallow = 1)
-	RULE(.title = "NoiseTorch", .isfloating = 1, .noswallow = 1)
-	RULE(.class = "Dragon", .isfloating = 1, .noswallow = 1)
-	RULE(.class = "ClipGrab", .isfloating = 1, .noswallow = 1)
-	RULE(.class = "Onboard", .isfloating = 1, .noswallow = 1)
+	RULE(.title = "NoiseTorch", .isfloating = 1, .iscentered = 1, .noswallow = 1)
+	RULE(.class = "Dragon", .isfloating = 1, .iscentered = 1, .noswallow = 1)
+	RULE(.class = "ClipGrab", .isfloating = 1, .iscentered = 1, .noswallow = 1)
+	RULE(.class = "Onboard", .isfloating = 1, .iscentered = 1, .noswallow = 1)
 	#endif // SWALLOW_PATCH
-	RULE(.class = "Safeeyes", .isfloating = 1)
+	RULE(.class = "Safeeyes", .isfloating = 1, .iscentered = 1)
 	#if WINDOWROLERULE_PATCH
 	RULE(.class = "Brave-browser", .role = "browser", .tags = TAG(1))
 	#else
@@ -538,7 +537,7 @@ static const Rule rules[] = {
 	RULE(.instance = "spterm", .scratchkey = '~', .isfloating = 1, .iscentered = 1)
 	RULE(.instance = "spnotes", .scratchkey = 'n', .isfloating = 1, .iscentered = 1)
 	#elif SCRATCHPADS_PATCH
-	RULE(.instance = "spterm", .tags = SPTAG(0), .isfloating = 1)
+	RULE(.instance = "spterm", .tags = SPTAG(0), .isfloating = 1, .iscentered = 1)
 	#endif // SCRATCHPADS_PATCH
 };
 
