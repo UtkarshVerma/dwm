@@ -1114,11 +1114,6 @@ arrangemon(Monitor *m)
 	strncpy(m->ltsymbol, m->lt[m->sellt]->symbol, sizeof m->ltsymbol);
 	if (m->lt[m->sellt]->arrange)
 		m->lt[m->sellt]->arrange(m);
-	#if ROUNDED_CORNERS_PATCH
-	Client *c;
-	for (c = nexttiled(m->clients); c; c = nexttiled(c->next))
-		drawroundedcorners(c);
-	#endif // ROUNDED_CORNERS_PATCH
 }
 
 void
@@ -1256,6 +1251,10 @@ cleanup(void)
 	Monitor *m;
 	Layout foo = { "", NULL };
 	size_t i;
+
+	#if ALT_TAB_PATCH
+	alttabend();
+	#endif // ALT_TAB_PATCH
 
 	#if SEAMLESS_RESTART_PATCH
 	for (m = mons; m; m = m->next)
@@ -1496,6 +1495,9 @@ configurenotify(XEvent *e)
 				#endif // !FAKEFULLSCREEN_PATCH
 				for (bar = m->bar; bar; bar = bar->next)
 					XMoveResizeWindow(dpy, bar->win, bar->bx, bar->by, bar->bw, bar->bh);
+				#if BAR_TAGPREVIEW_PATCH
+				createpreview(m);
+				#endif // BAR_TAGPREVIEW_PATCH
 			}
 			focus(NULL);
 			arrange(NULL);
@@ -2073,7 +2075,11 @@ focus(Client *c)
 		#endif // BAR_FLEXWINTITLE_PATCH
 		setfocus(c);
 	} else {
+		#if NODMENU_PATCH
+		XSetInputFocus(dpy, selmon->bar && selmon->bar->win ? selmon->bar->win : root, RevertToPointerRoot, CurrentTime);
+		#else
 		XSetInputFocus(dpy, root, RevertToPointerRoot, CurrentTime);
+		#endif // NODMENU_PATCH
 		XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
 	}
 	selmon->sel = c;
@@ -2287,24 +2293,38 @@ grabkeys(void)
 {
 	updatenumlockmask();
 	{
-		unsigned int i, j;
+		unsigned int i, j, k;
 		unsigned int modifiers[] = { 0, LockMask, numlockmask, numlockmask|LockMask };
-		KeyCode code;
+		int start, end, skip;
+		KeySym *syms;
 
 		XUngrabKey(dpy, AnyKey, AnyModifier, root);
-		for (i = 0; i < LENGTH(keys); i++)
-			if ((code = XKeysymToKeycode(dpy, keys[i].keysym)))
-				for (j = 0; j < LENGTH(modifiers); j++)
-					XGrabKey(dpy, code, keys[i].mod | modifiers[j], root,
-						True, GrabModeAsync, GrabModeAsync);
+		XDisplayKeycodes(dpy, &start, &end);
+		syms = XGetKeyboardMapping(dpy, start, end - start + 1, &skip);
+		if (!syms)
+			return;
+		for (k = start; k <= end; k++)
+			for (i = 0; i < LENGTH(keys); i++)
+				/* skip modifier codes, we do that ourselves */
+				if (keys[i].keysym == syms[(k - start) * skip])
+					for (j = 0; j < LENGTH(modifiers); j++)
+						XGrabKey(dpy, k,
+							 keys[i].mod | modifiers[j],
+							 root, True,
+							 GrabModeAsync, GrabModeAsync);
 		#if ON_EMPTY_KEYS_PATCH
 		if (!selmon->sel)
-			for (i = 0; i < LENGTH(on_empty_keys); i++)
-				if ((code = XKeysymToKeycode(dpy, on_empty_keys[i].keysym)))
-					for (j = 0; j < LENGTH(modifiers); j++)
-						XGrabKey(dpy, code, on_empty_keys[i].mod | modifiers[j], root,
-								True, GrabModeAsync, GrabModeAsync);
+			for (k = start; k <= end; k++)
+				for (i = 0; i < LENGTH(on_empty_keys); i++)
+					/* skip modifier codes, we do that ourselves */
+					if (on_empty_keys[i].keysym == syms[(k - start) * skip])
+						for (j = 0; j < LENGTH(modifiers); j++)
+							XGrabKey(dpy, k,
+								 on_empty_keys[i].mod | modifiers[j],
+								 root, True,
+								 GrabModeAsync, GrabModeAsync);
 		#endif // ON_EMPTY_KEYS_PATCH
+		XFree(syms);
 	}
 }
 
@@ -2502,8 +2522,6 @@ manage(Window w, XWindowAttributes *wa)
 	#endif // BAR_FLEXWINTITLE_PATCH
 	configure(c); /* propagates border_width, if size doesn't change */
 	updatesizehints(c);
-	if (getatomprop(c, netatom[NetWMState], XA_ATOM) == netatom[NetWMFullscreen])
-		setfullscreen(c, 1);
 	updatewmhints(c);
 	#if DECORATION_HINTS_PATCH
 	updatemotifhints(c);
@@ -2532,6 +2550,9 @@ manage(Window w, XWindowAttributes *wa)
 		c->sfh = c->h;
 	}
 	#endif // SAVEFLOATS_PATCH / EXRESIZE_PATCH
+
+	if (getatomprop(c, netatom[NetWMState], XA_ATOM) == netatom[NetWMFullscreen])
+		setfullscreen(c, 1);
 
 	XSelectInput(dpy, w, EnterWindowMask|FocusChangeMask|PropertyChangeMask|StructureNotifyMask);
 	grabbuttons(c, 0);
@@ -2753,9 +2774,6 @@ movemouse(const Arg *arg)
 			if (!selmon->lt[selmon->sellt]->arrange || c->isfloating) {
 				resize(c, nx, ny, c->w, c->h, 1);
 			}
-			#if ROUNDED_CORNERS_PATCH
-			drawroundedcorners(c);
-			#endif // ROUNDED_CORNERS_PATCH
 			break;
 		}
 	} while (ev.type != ButtonRelease);
@@ -2779,9 +2797,6 @@ movemouse(const Arg *arg)
 		c->sfy = ny;
 	}
 	#endif // SAVEFLOATS_PATCH / EXRESIZE_PATCH
-	#if ROUNDED_CORNERS_PATCH
-	drawroundedcorners(c);
-	#endif // ROUNDED_CORNERS_PATCH
 	ignoreconfigurerequests = 0;
 }
 
@@ -2939,6 +2954,9 @@ resizeclient(Client *c, int x, int y, int w, int h)
 	c->expandmask = 0;
 	#endif // EXRESIZE_PATCH
 	wc.border_width = c->bw;
+	#if ROUNDED_CORNERS_PATCH
+	drawroundedcorners(c);
+	#endif // ROUNDED_CORNERS_PATCH
 	#if NOBORDER_PATCH
 	if (((nexttiled(c->mon->clients) == c && !nexttiled(c->next))
 		#if MONOCLE_LAYOUT
@@ -3071,9 +3089,6 @@ resizemouse(const Arg *arg)
 			}
 			if (!selmon->lt[selmon->sellt]->arrange || c->isfloating) {
 				resize(c, nx, ny, nw, nh, 1);
-				#if ROUNDED_CORNERS_PATCH
-				drawroundedcorners(c);
-				#endif // ROUNDED_CORNERS_PATCH
 			}
 			break;
 		}
@@ -3540,6 +3555,9 @@ setfullscreen(Client *c, int fullscreen)
 		arrange(c->mon);
 		#endif // !FAKEFULLSCREEN_PATCH
 	}
+	#if FAKEFULLSCREEN_PATCH
+	resizeclient(c, c->x, c->y, c->w, c->h);
+	#endif // FAKEFULLSCREEN_PATCH
 }
 #endif // FAKEFULLSCREEN_CLIENT_PATCH
 
@@ -3781,9 +3799,6 @@ setup(void)
 
 	updatebars();
 	updatestatus();
-	#if BAR_TAGPREVIEW_PATCH
-	updatepreview();
-	#endif // BAR_TAGPREVIEW_PATCH
 
 	/* supporting window for NetWMCheck */
 	wmcheckwin = XCreateSimpleWindow(dpy, root, 0, 0, 1, 1, 0, 0, 0);
@@ -3965,6 +3980,10 @@ spawn(const Arg *arg)
 	#if RIODRAW_PATCH
 	pid_t pid;
 	#endif // RIODRAW_PATCH
+	#if !NODMENU_PATCH
+	if (arg->v == dmenucmd)
+		dmenumon[0] = '0' + selmon->num;
+	#endif // NODMENU_PATCH
 
 	#if RIODRAW_PATCH
 	if ((pid = fork()) == 0)
@@ -5084,6 +5103,7 @@ main(int argc, char *argv[])
 		else if (!strcmp("-sf", argv[i])) /* selected foreground color */
 			colors[SchemeSel][0] = argv[++i];
 		#endif // !BAR_VTCOLORS_PATCH
+		#if NODMENU_PATCH
 		else if (!strcmp("-df", argv[i])) /* dmenu font */
 			dmenucmd[2] = argv[++i];
 		else if (!strcmp("-dnb", argv[i])) /* dmenu normal background color */
@@ -5094,6 +5114,18 @@ main(int argc, char *argv[])
 			dmenucmd[8] = argv[++i];
 		else if (!strcmp("-dsf", argv[i])) /* dmenu selected foreground color */
 			dmenucmd[10] = argv[++i];
+		#else
+		else if (!strcmp("-df", argv[i])) /* dmenu font */
+			dmenucmd[4] = argv[++i];
+		else if (!strcmp("-dnb", argv[i])) /* dmenu normal background color */
+			dmenucmd[6] = argv[++i];
+		else if (!strcmp("-dnf", argv[i])) /* dmenu normal foreground color */
+			dmenucmd[8] = argv[++i];
+		else if (!strcmp("-dsb", argv[i])) /* dmenu selected background color */
+			dmenucmd[10] = argv[++i];
+		else if (!strcmp("-dsf", argv[i])) /* dmenu selected foreground color */
+			dmenucmd[12] = argv[++i];
+		#endif // NODMENU_PATCH
 		else die(help());
 	#else
 	if (argc == 2 && !strcmp("-v", argv[1]))

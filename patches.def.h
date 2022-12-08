@@ -299,19 +299,6 @@
  */
 #define BAR_CLIENTINDICATOR_PATCH N/A
 
-/* This patch enables color emoji in dwm by removing a workaround for a BadLength error
- * in the Xft library when color glyphs are used.
- * To enable this you will need an updated Xft library that can handle color glyphs otherwise
- * dwm will crash on encountering such characters. Note that you will also need a font that
- * provides color emojis for this to work.
- */
-#define BAR_COLOR_EMOJI_PATCH 0
-
-/* Allow configuration of colors for each tag. Looks good with the underline patch.
- * https://github.com/fitrh/dwm/issues/1
- */
-#define BAR_COLORFULTAGS_PATCH 0
-
 /* Updates the position of dmenu to match that of the bar. I.e. if topbar is 0 then dmenu
  * will appear at the bottom and if 1 then dmenu will appear at the top.
  * https://dwm.suckless.org/patches/dmenumatchtop
@@ -363,6 +350,12 @@
  * https://docs.google.com/viewer?a=v&pid=forums&srcid=MDAwODA2MTg0MDQyMjE0OTgzMzMBMDQ3ODQzODkyMTU3NTAyMTMxNTYBX2RUMVNtOUtDQUFKATAuMQEBdjI&authuser=0
  */
 #define BAR_IGNORE_XFT_ERRORS_WHEN_DRAWING_TEXT_PATCH 0
+
+/* This patch adds back in the workaround for a BadLength error in the Xft library when color
+ * glyphs are used. This is for systems that do not have an updated version of the Xft library
+ * (or generally prefer monochrome fonts).
+ */
+#define BAR_NO_COLOR_EMOJI_PATCH 0
 
 /* This patch adds vertical and horizontal space between the statusbar and the edge of the screen.
  * https://dwm.suckless.org/patches/barpadding/
@@ -444,6 +437,11 @@
 /***
  * Other patches
  */
+
+/* Adds a window task switcher toggled using alt-tab.
+ * https://dwm.suckless.org/patches/alt-tab/
+ */
+#define ALT_TAB_PATCH 0
 
 /* All floating windows are centered, like the center patch, but without a rule.
  * The center patch takes precedence over this patch.
@@ -823,6 +821,12 @@
  * https://dwm.suckless.org/patches/noborder/
  */
 #define NOBORDER_PATCH 0
+
+/* Enable modifying or removing dmenu in config.def.h which resulted previously in a
+ * compilation error because two lines of code hardcode dmenu into dwm.
+ * https://dwm.suckless.org/patches/nodmenu/
+ */
+#define NODMENU_PATCH 0
 
 /* This patch allows for toggleable client button bindings that have no modifiers.
  * This can, for example, allow you to move or resize using the mouse alone without holding
