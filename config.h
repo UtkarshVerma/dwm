@@ -130,7 +130,7 @@ static void (*bartabmonfns[])(Monitor *) = { NULL /* , customlayoutfn */ };
 #if BAR_PANGO_PATCH
 static const char font[]                 = "monospace 10";
 #else
-static const char *fonts[]               = { "monospace:size=12", "emoji:size=12", "icons:size=13" };
+static const char *fonts[]               = { "monospace:size=12", "icons:size=13" };
 #endif // BAR_PANGO_PATCH
 // static const char dmenufont[]            = "monospace:size=10";
 
@@ -422,7 +422,7 @@ static const char *const autostart[] = {
 #endif // COOL_AUTOSTART_PATCH
 
 #if RENAMED_SCRATCHPADS_PATCH
-static const char *spterm[] = {"~", "terminal", "-n" "spterm","-g", "80x23", NULL};
+static const char *spterm[] = {"~", "terminal", "-n", "spterm","-g", "80x23", NULL};
 static const char *spnotes[] = {"n", "terminal", "-n", "spnotes", "-g", "80x26", "-e", "nvim", "-c", "VimwikiIndex", NULL};
 #elif SCRATCHPADS_PATCH
 const char *spcmd1[] = {"st", "-n", "spterm", "-g", "120x34", NULL };
@@ -529,7 +529,7 @@ static const Rule rules[] = {
 	RULE(.class = "Brave-browser", .tags = TAG(1))
 	#endif
 	RULE(.class = "Code", .tags = TAG(2))
-	RULE(.title = "Spotify", .tags = TAG(8))
+	RULE(.class = "Spotify", .tags = TAG(8))
 	RULE(.class = "discord", .tags = TAG(9))
 	RULE(.title = "wlroots - X11-1", .tags = TAG(2))
 
