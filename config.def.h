@@ -751,9 +751,6 @@ static const Layout layouts[] = {
 	#if NROWGRID_LAYOUT
 	{ "###",      nrowgrid,         {0} },
 	#endif
-	#if CYCLELAYOUTS_PATCH
-	{ NULL,       NULL,             {0} },
-	#endif
 };
 #else
 static const Layout layouts[] = {
@@ -800,9 +797,6 @@ static const Layout layouts[] = {
 	#endif
 	#if NROWGRID_LAYOUT
 	{ "###",      nrowgrid },
-	#endif
-	#if CYCLELAYOUTS_PATCH
-	{ NULL,       NULL },
 	#endif
 };
 #endif // FLEXTILE_DELUXE_LAYOUT
