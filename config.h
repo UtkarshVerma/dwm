@@ -132,7 +132,6 @@ static const char font[]                 = "monospace 10";
 #else
 static const char *fonts[]               = { "monospace:size=12", "icons:size=13" };
 #endif // BAR_PANGO_PATCH
-// static const char dmenufont[]            = "monospace:size=10";
 
 static char c000000[]                    = "#000000"; // placeholder value
 
@@ -875,13 +874,13 @@ static const char *xkb_layouts[]  = {
 
 #if STACKER_PATCH
 #define STACKKEYS(MOD,ACTION) \
-	{ MOD, XK_Down,  ACTION##stack, {.i = INC(+1) } }, \
-	{ MOD, XK_Up,    ACTION##stack, {.i = INC(-1) } }, \
-	// { MOD, XK_s,     ACTION##stack, {.i = PREVSEL } }, \
-	// { MOD, XK_w,     ACTION##stack, {.i = 0 } }, \
-	// { MOD, XK_e,     ACTION##stack, {.i = 1 } }, \
-	// { MOD, XK_a,     ACTION##stack, {.i = 2 } }, \
-	// { MOD, XK_z,     ACTION##stack, {.i = -1 } },
+	{ MOD, XK_j,     ACTION##stack, {.i = INC(+1) } }, \
+	{ MOD, XK_k,     ACTION##stack, {.i = INC(-1) } }, \
+	{ MOD, XK_s,     ACTION##stack, {.i = PREVSEL } }, \
+	{ MOD, XK_w,     ACTION##stack, {.i = 0 } }, \
+	{ MOD, XK_e,     ACTION##stack, {.i = 1 } }, \
+	{ MOD, XK_a,     ACTION##stack, {.i = 2 } }, \
+	{ MOD, XK_z,     ACTION##stack, {.i = -1 } },
 #endif // STACKER_PATCH
 
 #if BAR_HOLDBAR_PATCH
@@ -895,22 +894,16 @@ static const char *xkb_layouts[]  = {
 #if !NODMENU_PATCH
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 #endif // NODMENU_PATCH
-// static const char *dmenucmd[] = {
-// 	"dmenu_run",
-// 	#if !NODMENU_PATCH
-// 	"-m", dmenumon,
-// 	#endif // NODMENU_PATCH
-// 	"-fn", dmenufont,
-// 	"-nb", normbgcolor,
-// 	"-nf", normfgcolor,
-// 	"-sb", selbgcolor,
-// 	"-sf", selfgcolor,
-// 	#if BAR_DMENUMATCHTOP_PATCH
-// 	topbar ? NULL : "-b",
-// 	#endif // BAR_DMENUMATCHTOP_PATCH
-// 	NULL
-// };
-static const char *roficmd[]  = { "rofi", "-show", "run", NULL };
+static const char *dmenucmd[] = {
+	"dmenu_run",
+	#if !NODMENU_PATCH
+	"-m", dmenumon,
+	#endif // NODMENU_PATCH
+	#if BAR_DMENUMATCHTOP_PATCH
+	topbar ? NULL : "-b",
+	#endif // BAR_DMENUMATCHTOP_PATCH
+	NULL
+};
 static const char *termcmd[]  = { "terminal", NULL };
 
 #if BAR_STATUSCMD_PATCH
@@ -943,7 +936,7 @@ static Key keys[] = {
 	#if KEYMODES_PATCH
 	{ MODKEY,                       XK_Escape,     setkeymode,             {.ui = COMMANDMODE} },
 	#endif // KEYMODES_PATCH
-	{ MODKEY,                       XK_d,          spawn,                  {.v = roficmd } },
+	{ MODKEY,                       XK_d,          spawn,                  {.v = dmenucmd } },
 	{ MODKEY,                       XK_Return,     spawn,                  {.v = termcmd } },
 	#if RIODRAW_PATCH
 	{ MODKEY|ControlMask,           XK_p,          riospawnsync,           {.v = dmenucmd } },
@@ -996,11 +989,11 @@ static Key keys[] = {
 	{ MODKEY|ControlMask,           XK_i,          incnstack,              {.i = +1 } },
 	{ MODKEY|ControlMask,           XK_u,          incnstack,              {.i = -1 } },
 	#endif // FLEXTILE_DELUXE_LAYOUT
-	{ MODKEY,                       XK_Left,       setmfact,               {.f = -0.05} },
-	{ MODKEY,                       XK_Right,      setmfact,               {.f = +0.05} },
+	{ MODKEY,                       XK_h,          setmfact,               {.f = -0.05} },
+	{ MODKEY,                       XK_l,          setmfact,               {.f = +0.05} },
 	#if CFACTS_PATCH
-	{ MODKEY|ShiftMask,             XK_h,          setcfact,               {.f = +0.25} },
-	{ MODKEY|ShiftMask,             XK_l,          setcfact,               {.f = -0.25} },
+	{ MODKEY|ShiftMask,             XK_h,          setcfact,               {.f = -0.25} },
+	{ MODKEY|ShiftMask,             XK_l,          setcfact,               {.f = +0.25} },
 	{ MODKEY|ShiftMask,             XK_o,          setcfact,               {0} },
 	#endif // CFACTS_PATCH
 	#if ASPECTRESIZE_PATCH
@@ -1329,7 +1322,7 @@ static Key keys[] = {
 	TAGKEYS(                        XK_8,                                  7)
 	TAGKEYS(                        XK_9,                                  8)
 
-	{ MODKEY,                       XK_slash,      spawn,                  SHCMD("rofi-emoji") },
+	{ MODKEY,                       XK_slash,      spawn,                  SHCMD("dmenu-emoji") },
 	{ MODKEY,                       XK_c,          spawn,                  SHCMD("rofi-calc") },
 	{ MODKEY,                       XK_Escape,     spawn,                  SHCMD("sysact")},
 	{ MODKEY,                       XK_w,          spawn,                  SHCMD("$BROWSER") },
@@ -1338,12 +1331,12 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_e,          spawn,                  SHCMD("terminal -e htop") },
 
 	// Music
-	{ MODKEY|ShiftMask,             XK_j,          spawn,                  SHCMD("musicctl seek -10") },
-	{ MODKEY,                       XK_j,          spawn,                  SHCMD("musicctl prev") },
-	{ MODKEY,                       XK_k,          spawn,                  SHCMD("musicctl toggle") },
-	{ MODKEY|ShiftMask,             XK_k,          spawn,                  SHCMD("musicctl stop") },
-	{ MODKEY,                       XK_l,          spawn,                  SHCMD("musicctl next") },
-	{ MODKEY|ShiftMask,             XK_l,          spawn,                  SHCMD("musicctl seek +10") },
+	{ MODKEY|ControlMask|ShiftMask, XK_j,          spawn,                  SHCMD("musicctl seek -10") },
+	{ MODKEY|ControlMask,           XK_j,          spawn,                  SHCMD("musicctl prev") },
+	{ MODKEY|ControlMask,           XK_k,          spawn,                  SHCMD("musicctl toggle") },
+	{ MODKEY|ControlMask|ShiftMask, XK_k,          spawn,                  SHCMD("musicctl stop") },
+	{ MODKEY|ControlMask,           XK_l,          spawn,                  SHCMD("musicctl next") },
+	{ MODKEY|ControlMask|ShiftMask, XK_l,          spawn,                  SHCMD("musicctl seek +10") },
 
 	// Screenshots
 	{ 0,                            XK_Print,      spawn,                  SHCMD("snip full clip") },
@@ -1362,6 +1355,9 @@ static Key keys[] = {
 	{ MODKEY|ControlMask,           XK_Right,      spawn,                  SHCMD("asusctl -n") },
 	{ MODKEY|ControlMask,           XK_Left,       spawn,                  SHCMD("asusctl -p") },
 
+	{ MODKEY,                       XK_m,          spawn,                  SHCMD("mountmate") },
+	{ MODKEY|ShiftMask,             XK_m,          spawn,                  SHCMD("mountmate -u") },
+
 	#define PAMIXER(cmd) SHCMD("pamixer " cmd "; pkill -RTMIN+22 $STATUSBAR")
 	{ 0,                            XF86XK_AudioMute,         spawn,       PAMIXER("-t") },
 	{ 0,                            XF86XK_AudioRaiseVolume,  spawn,       PAMIXER("-i 3") },
@@ -1375,7 +1371,7 @@ static Key keys[] = {
 	{ 0,                            XF86XK_AudioForward,      spawn,       SHCMD("musicctl seek +10")},
 	{ 0,                            XF86XK_AudioMicMute,      spawn,       SHCMD("toggle-mic") },
 	{ 0,                            XF86XK_Tools,             spawn,       SHCMD("terminal -e ncmpcpp") },
-	{ 0,                            XF86XK_Explorer,          spawn,       SHCMD("thunar") },
+	{ 0,                            XF86XK_Explorer,          spawn,       SHCMD("terminal -e $FILE_MANAGER") },
 	{ 0,                            XF86XK_Calculator,        spawn,       SHCMD("rofi-calc") },
 	{ 0,                            XF86XK_ScreenSaver,       spawn,       SHCMD("slock & xset dpms force off; musicctl pause") },
 	{ 0,                            XF86XK_MonBrightnessUp,   spawn,       SHCMD("light -A 5") },
