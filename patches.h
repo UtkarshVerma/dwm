@@ -339,7 +339,7 @@
  * https://github.com/bakkeby/dwm-flexipatch/issues/50 (_IS_FLOATING patch)
  * https://dwm.suckless.org/patches/ewmhtags/
  */
-#define BAR_EWMHTAGS_PATCH 1
+#define BAR_EWMHTAGS_PATCH 0
 
 /* Allows the bar height to be explicitly set rather than being derived from font.
  * https://dwm.suckless.org/patches/bar_height/
@@ -790,7 +790,7 @@
  * compilation error because two lines of code hardcode dmenu into dwm.
  * https://dwm.suckless.org/patches/nodmenu/
  */
-#define NODMENU_PATCH 0
+#define NODMENU_PATCH 1
 
 /* This patch allows for toggleable client button bindings that have no modifiers.
  * This can, for example, allow you to move or resize using the mouse alone without holding
@@ -842,6 +842,11 @@
  * Depends on both pertag and vanitygaps patches being enabled.
  */
 #define PERTAG_VANITYGAPS_PATCH 0
+
+/* This patch allows configuring vanity gaps on a per-monitor basis rather than
+ * all monitors (default).
+ */
+#define PERMON_VANITYGAPS_PATCH 1
 
 /* This controls whether or not to also store bar position on a per
  * tag basis, or leave it as one bar per monitor.
