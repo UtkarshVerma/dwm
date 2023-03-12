@@ -1325,6 +1325,8 @@ static Key keys[] = {
 	{ MODKEY,                       XK_slash,      spawn,                  SHCMD("dmenu-emoji") },
 	{ MODKEY,                       XK_c,          spawn,                  SHCMD("rofi-calc") },
 	{ MODKEY,                       XK_Escape,     spawn,                  SHCMD("sysact")},
+	{ MODKEY,                       XK_p,          spawn,                  SHCMD("sysprofile") },
+	{ MODKEY|ShiftMask,             XK_p,          spawn,                  SHCMD("sysprofile -g") },
 	{ MODKEY,                       XK_w,          spawn,                  SHCMD("$BROWSER") },
 	{ MODKEY|ShiftMask,             XK_w,          spawn,                  SHCMD("terminal -e nmtui") },
 	{ MODKEY,                       XK_e,          spawn,                  SHCMD("terminal -e $FILE_MANAGER") },
