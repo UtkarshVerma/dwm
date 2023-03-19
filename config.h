@@ -689,7 +689,7 @@ static const int scrollargs[][2] = {
 static const Layout layouts[] = {
 	/* symbol     arrange function, { nmaster, nstack, layout, master axis, stack axis, secondary stack axis, symbol func } */
 	{ "[]=",      flextile,         { -1, -1, SPLIT_VERTICAL, TOP_TO_BOTTOM, TOP_TO_BOTTOM, 0, NULL } }, // default tile layout
- 	{ "><>",      NULL,             {0} },    /* no layout function means floating behavior */
+	{ "><>",      NULL,             {0} },    /* no layout function means floating behavior */
 	{ "[M]",      flextile,         { -1, -1, NO_SPLIT, MONOCLE, MONOCLE, 0, NULL } }, // monocle
 	{ "|||",      flextile,         { -1, -1, SPLIT_VERTICAL, LEFT_TO_RIGHT, TOP_TO_BOTTOM, 0, NULL } }, // columns (col) layout
 	{ ">M>",      flextile,         { -1, -1, FLOATING_MASTER, LEFT_TO_RIGHT, LEFT_TO_RIGHT, 0, NULL } }, // floating master
@@ -794,9 +794,6 @@ static const Layout layouts[] = {
 	#if NROWGRID_LAYOUT
 	{ "###",      nrowgrid },
 	#endif
-	#if CYCLELAYOUTS_PATCH
-	{ NULL,       NULL },
-	#endif
 };
 #endif // FLEXTILE_DELUXE_LAYOUT
 
@@ -873,14 +870,14 @@ static const char *xkb_layouts[]  = {
 #endif // COMBO_PATCH / SWAPTAGS_PATCH / TAGOTHERMONITOR_PATCH
 
 #if STACKER_PATCH
+	/* { MOD, XK_s,     ACTION##stack, {.i = PREVSEL } }, \ */
+	/* { MOD, XK_w,     ACTION##stack, {.i = 0 } }, \ */
+	/* { MOD, XK_e,     ACTION##stack, {.i = 1 } }, \ */
+	/* { MOD, XK_a,     ACTION##stack, {.i = 2 } }, \ */
+	/* { MOD, XK_z,     ACTION##stack, {.i = -1 } }, */
 #define STACKKEYS(MOD,ACTION) \
 	{ MOD, XK_j,     ACTION##stack, {.i = INC(+1) } }, \
-	{ MOD, XK_k,     ACTION##stack, {.i = INC(-1) } }, \
-	{ MOD, XK_s,     ACTION##stack, {.i = PREVSEL } }, \
-	{ MOD, XK_w,     ACTION##stack, {.i = 0 } }, \
-	{ MOD, XK_e,     ACTION##stack, {.i = 1 } }, \
-	{ MOD, XK_a,     ACTION##stack, {.i = 2 } }, \
-	{ MOD, XK_z,     ACTION##stack, {.i = -1 } },
+	{ MOD, XK_k,     ACTION##stack, {.i = INC(-1) } }, 
 #endif // STACKER_PATCH
 
 #if BAR_HOLDBAR_PATCH
@@ -1102,9 +1099,11 @@ static Key keys[] = {
 	{ MODKEY|Mod1Mask,              XK_0,          setlayout,              {0} },
 	{ MODKEY|Mod1Mask,              XK_1,          setlayout,              {.v = &layouts[0]} },
 	{ MODKEY|Mod1Mask,              XK_2,          setlayout,              {.v = &layouts[1]} },
-	#if COLUMNS_LAYOUT
-	{ MODKEY,                       XK_c,          setlayout,              {.v = &layouts[3]} },
-	#endif // COLUMNS_LAYOUT
+	{ MODKEY|Mod1Mask,              XK_3,          setlayout,              {.v = &layouts[2]} },
+	{ MODKEY|Mod1Mask,              XK_4,          setlayout,              {.v = &layouts[3]} },
+	{ MODKEY|Mod1Mask,              XK_5,          setlayout,              {.v = &layouts[4]} },
+	{ MODKEY|Mod1Mask,              XK_6,          setlayout,              {.v = &layouts[5]} },
+	{ MODKEY|Mod1Mask,              XK_7,          setlayout,              {.v = &layouts[6]} },
 	#if FLEXTILE_DELUXE_LAYOUT
 	{ MODKEY|ControlMask,           XK_t,          rotatelayoutaxis,       {.i = +1 } },   /* flextile, 1 = layout axis */
 	{ MODKEY|ControlMask,           XK_Tab,        rotatelayoutaxis,       {.i = +2 } },   /* flextile, 2 = master axis */
@@ -1323,6 +1322,7 @@ static Key keys[] = {
 	TAGKEYS(                        XK_9,                                  8)
 
 	{ MODKEY,                       XK_slash,      spawn,                  SHCMD("dmenu-emoji") },
+	{ MODKEY|ShiftMask,             XK_slash,      spawn,                  SHCMD("dmenu-emoji -c") },
 	{ MODKEY,                       XK_c,          spawn,                  SHCMD("rofi-calc") },
 	{ MODKEY,                       XK_Escape,     spawn,                  SHCMD("sysact")},
 	{ MODKEY,                       XK_p,          spawn,                  SHCMD("sysprofile") },
