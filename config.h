@@ -877,7 +877,9 @@ static const char *xkb_layouts[]  = {
 	/* { MOD, XK_z,     ACTION##stack, {.i = -1 } }, */
 #define STACKKEYS(MOD,ACTION) \
 	{ MOD, XK_j,     ACTION##stack, {.i = INC(+1) } }, \
-	{ MOD, XK_k,     ACTION##stack, {.i = INC(-1) } }, 
+	{ MOD, XK_k,     ACTION##stack, {.i = INC(-1) } }, \
+	{ MOD, XK_Down,  ACTION##stack, {.i = INC(-1) } }, \
+	{ MOD, XK_Up,    ACTION##stack, {.i = INC(-1) } },
 #endif // STACKER_PATCH
 
 #if BAR_HOLDBAR_PATCH
@@ -1103,7 +1105,6 @@ static Key keys[] = {
 	{ MODKEY|Mod1Mask,              XK_4,          setlayout,              {.v = &layouts[3]} },
 	{ MODKEY|Mod1Mask,              XK_5,          setlayout,              {.v = &layouts[4]} },
 	{ MODKEY|Mod1Mask,              XK_6,          setlayout,              {.v = &layouts[5]} },
-	{ MODKEY|Mod1Mask,              XK_7,          setlayout,              {.v = &layouts[6]} },
 	#if FLEXTILE_DELUXE_LAYOUT
 	{ MODKEY|ControlMask,           XK_t,          rotatelayoutaxis,       {.i = +1 } },   /* flextile, 1 = layout axis */
 	{ MODKEY|ControlMask,           XK_Tab,        rotatelayoutaxis,       {.i = +2 } },   /* flextile, 2 = master axis */
@@ -1303,8 +1304,8 @@ static Key keys[] = {
 	{ MODKEY|ControlMask,           XK_numbersign, setborderpx,            {.i = 0 } },
 	#endif // SETBORDERPX_PATCH
 	#if CYCLELAYOUTS_PATCH
-	{ MODKEY|ControlMask,           XK_comma,      cyclelayout,            {.i = -1 } },
-	{ MODKEY|ControlMask,           XK_period,     cyclelayout,            {.i = +1 } },
+	{ MODKEY|Mod1Mask,           XK_comma,      cyclelayout,            {.i = -1 } },
+	{ MODKEY|Mod1Mask,           XK_period,     cyclelayout,            {.i = +1 } },
 	#endif // CYCLELAYOUTS_PATCH
 	#if MPDCONTROL_PATCH
 	{ MODKEY,                       XK_F1,         mpdchange,              {.i = -1} },
@@ -1360,7 +1361,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_m,          spawn,                  SHCMD("mountmate") },
 	{ MODKEY|ShiftMask,             XK_m,          spawn,                  SHCMD("mountmate -u") },
 
-	#define PAMIXER(cmd) SHCMD("pamixer " cmd "; pkill -RTMIN+22 $STATUSBAR")
+	#define PAMIXER(cmd) SHCMD("pamixer " cmd "; pkill -RTMIN+8 $STATUSBAR")
 	{ 0,                            XF86XK_AudioMute,         spawn,       PAMIXER("-t") },
 	{ 0,                            XF86XK_AudioRaiseVolume,  spawn,       PAMIXER("-i 3") },
 	{ 0,                            XF86XK_AudioLowerVolume,  spawn,       PAMIXER("-d 3") },
@@ -1418,12 +1419,17 @@ static Button buttons[] = {
 	#if BAR_STATUSBUTTON_PATCH
 	{ ClkButton,            0,                   Button1,        spawn,          {.v = dmenucmd } },
 	#endif // BAR_STATUSBUTTON_PATCH
+	#if CYCLELAYOUTS_PATCH
+	{ ClkLtSymbol,          0,                   Button1,        cyclelayout,    { .i = -1 } },
+	{ ClkLtSymbol,          0,                   Button3,        cyclelayout,    { .i = +1 } },
+	#else
 	{ ClkLtSymbol,          0,                   Button1,        setlayout,      {0} },
 	#if BAR_LAYOUTMENU_PATCH
 	{ ClkLtSymbol,          0,                   Button3,        layoutmenu,     {0} },
 	#else
 	{ ClkLtSymbol,          0,                   Button3,        setlayout,      {.v = &layouts[2]} },
 	#endif // BAR_LAYOUTMENU_PATCH
+	#endif // CYCLELAYOUTS_PATCH
 	#if BAR_WINTITLEACTIONS_PATCH
 	{ ClkWinTitle,          0,                   Button1,        togglewin,      {0} },
 	{ ClkWinTitle,          0,                   Button3,        showhideclient, {0} },
