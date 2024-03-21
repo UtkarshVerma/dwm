@@ -531,6 +531,7 @@ static const Rule rules[] = {
 	RULE(.class = "Spotify", .tags = TAG(8))
 	RULE(.class = "discord", .tags = TAG(9))
 	RULE(.title = "wlroots - X11-1", .tags = TAG(2))
+	RULE(.class = "obsidian", .tags = TAG(3))
 
 	#if RENAMED_SCRATCHPADS_PATCH
 	RULE(.instance = "spterm", .scratchkey = '~', .isfloating = 1, .iscentered = 1)
@@ -936,6 +937,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Escape,     setkeymode,             {.ui = COMMANDMODE} },
 	#endif // KEYMODES_PATCH
 	{ MODKEY,                       XK_d,          spawn,                  {.v = dmenucmd } },
+	{ MODKEY | ShiftMask,           XK_d,          spawn,                  SHCMD("passmenu") },
 	{ MODKEY,                       XK_Return,     spawn,                  {.v = termcmd } },
 	#if RIODRAW_PATCH
 	{ MODKEY|ControlMask,           XK_p,          riospawnsync,           {.v = dmenucmd } },
@@ -1129,7 +1131,7 @@ static Key keys[] = {
 	#endif // NO_MOD_BUTTONS_PATCH
 	#if RENAMED_SCRATCHPADS_PATCH
 	{ MODKEY,                       XK_grave,      togglescratch,          {.v = spterm } },
-	{ MODKEY,                       XK_n,          togglescratch,          {.v = spnotes } },
+	// { MODKEY,                       XK_n,          togglescratch,          {.v = spnotes } },
 	// { MODKEY|ControlMask,           XK_grave,      setscratch,             {.v = scratchpadcmd } },
 	// { MODKEY|ShiftMask,             XK_grave,      removescratch,          {.v = scratchpadcmd } },
 	#elif SCRATCHPADS_PATCH
@@ -1326,12 +1328,12 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_slash,      spawn,                  SHCMD("dmenu-emoji -c") },
 	{ MODKEY,                       XK_c,          spawn,                  SHCMD("rofi-calc") },
 	{ MODKEY,                       XK_Escape,     spawn,                  SHCMD("sysact")},
-	{ MODKEY,                       XK_p,          spawn,                  SHCMD("sysprofile") },
-	{ MODKEY|ShiftMask,             XK_p,          spawn,                  SHCMD("sysprofile -g") },
+	{ MODKEY,                       XK_p,          spawn,                  SHCMD("sysprofile --cpu") },
+	{ MODKEY|ShiftMask,             XK_p,          spawn,                  SHCMD("sysprofile --gpu") },
 	{ MODKEY,                       XK_w,          spawn,                  SHCMD("$BROWSER") },
 	{ MODKEY|ShiftMask,             XK_w,          spawn,                  SHCMD("terminal -e nmtui") },
 	{ MODKEY,                       XK_e,          spawn,                  SHCMD("terminal -e $FILE_MANAGER") },
-	{ MODKEY|ShiftMask,             XK_e,          spawn,                  SHCMD("terminal -e htop") },
+	{ MODKEY|ShiftMask,             XK_e,          spawn,                  SHCMD("terminal -e $SYSTEM_MONITOR") },
 
 	// Music
 	{ MODKEY|ControlMask|ShiftMask, XK_j,          spawn,                  SHCMD("musicctl seek -10") },
@@ -1350,7 +1352,7 @@ static Key keys[] = {
 	{ MODKEY|ControlMask,           XK_s,          spawn,                  SHCMD("flameshot gui") },
 	{ MODKEY|ShiftMask,             XK_r,          spawn,                  SHCMD("screenrecord") },
 
-	{ MODKEY,                       XK_F4,         spawn,                  SHCMD("terminal -e pulsemixer; pkill -RTMIN+22 $STATUSBAR") },
+	{ MODKEY,                       XK_F4,         spawn,                  SHCMD("terminal -e pulsemixer; pkill -RTMIN+8 $STATUSBAR") },
 	{ MODKEY,                       XK_F11,        spawn,                  SHCMD("mpv --no-cache --no-osc --no-input-default-bindings --profile=low-latency --input-conf=/dev/null --title=webcam $(ls /dev/video[0,2,4,6,8] | tail -n 1)") },
 
 	{ MODKEY|ControlMask,           XK_Up,         spawn,                  SHCMD("light -A 5") },
@@ -1361,10 +1363,10 @@ static Key keys[] = {
 	{ MODKEY,                       XK_m,          spawn,                  SHCMD("mountmate") },
 	{ MODKEY|ShiftMask,             XK_m,          spawn,                  SHCMD("mountmate -u") },
 
-	#define PAMIXER(cmd) SHCMD("pamixer " cmd "; pkill -RTMIN+8 $STATUSBAR")
-	{ 0,                            XF86XK_AudioMute,         spawn,       PAMIXER("-t") },
-	{ 0,                            XF86XK_AudioRaiseVolume,  spawn,       PAMIXER("-i 3") },
-	{ 0,                            XF86XK_AudioLowerVolume,  spawn,       PAMIXER("-d 3") },
+	#define WPCTL(cmd, arg) SHCMD("wpctl " cmd " @DEFAULT_AUDIO_SINK@ " arg "; pkill -RTMIN+8 $STATUSBAR")
+	{ 0,                            XF86XK_AudioMute,         spawn,       WPCTL("set-mute", "toggle") },
+	{ 0,                            XF86XK_AudioRaiseVolume,  spawn,       WPCTL("set-volume --limit=1.0", "3%+") },
+	{ 0,                            XF86XK_AudioLowerVolume,  spawn,       WPCTL("set-volume --limit=1.0", "3%-") },
 	{ 0,                            XF86XK_AudioPrev,         spawn,       SHCMD("musicctl prev") },
 	{ 0,                            XF86XK_AudioNext,         spawn,       SHCMD("musicctl next") },
 	{ 0,                            XF86XK_AudioPause,        spawn,       SHCMD("musicctl pause") },
