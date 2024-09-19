@@ -130,7 +130,7 @@ static void (*bartabmonfns[])(Monitor *) = { NULL /* , customlayoutfn */ };
 #if BAR_PANGO_PATCH
 static const char font[]                 = "monospace 10";
 #else
-static const char *fonts[]               = { "monospace:size=12", "icons:size=13" };
+static const char *fonts[]               = { "monospace:pixelsize=16" };
 #endif // BAR_PANGO_PATCH
 
 static char c000000[]                    = "#000000"; // placeholder value
@@ -421,8 +421,8 @@ static const char *const autostart[] = {
 #endif // COOL_AUTOSTART_PATCH
 
 #if RENAMED_SCRATCHPADS_PATCH
-static const char *spterm[] = {"~", "terminal", "-n", "spterm","-g", "80x23", NULL};
-static const char *spnotes[] = {"n", "terminal", "-n", "spnotes", "-g", "80x26", "-e", "nvim", "-c", "VimwikiIndex", NULL};
+static const char *spterm[] = {"~", "terminal", "-n", "spterm", "-g", "80x23", NULL};
+static const char *spnotes[] = {"n", "obsidian", NULL};
 #elif SCRATCHPADS_PATCH
 const char *spcmd1[] = {"st", "-n", "spterm", "-g", "120x34", NULL };
 static Sp scratchpads[] = {
@@ -529,13 +529,12 @@ static const Rule rules[] = {
 	#endif
 	RULE(.class = "Code", .tags = TAG(2))
 	RULE(.class = "Spotify", .tags = TAG(8))
-	RULE(.class = "discord", .tags = TAG(9))
+	RULE(.class = "vesktop", .tags = TAG(9))
 	RULE(.title = "wlroots - X11-1", .tags = TAG(2))
-	RULE(.class = "obsidian", .tags = TAG(3))
 
 	#if RENAMED_SCRATCHPADS_PATCH
 	RULE(.instance = "spterm", .scratchkey = '~', .isfloating = 1, .iscentered = 1)
-	RULE(.instance = "spnotes", .scratchkey = 'n', .isfloating = 1, .iscentered = 1)
+	RULE(.class = "obsidian", .scratchkey = 'n')
 	#elif SCRATCHPADS_PATCH
 	RULE(.instance = "spterm", .tags = SPTAG(0), .isfloating = 1, .iscentered = 1)
 	#endif // SCRATCHPADS_PATCH
@@ -895,7 +894,7 @@ static const char *xkb_layouts[]  = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 #endif // NODMENU_PATCH
 static const char *dmenucmd[] = {
-	"dmenu_run",
+	"menu-run",
 	#if !NODMENU_PATCH
 	"-m", dmenumon,
 	#endif // NODMENU_PATCH
@@ -1131,7 +1130,7 @@ static Key keys[] = {
 	#endif // NO_MOD_BUTTONS_PATCH
 	#if RENAMED_SCRATCHPADS_PATCH
 	{ MODKEY,                       XK_grave,      togglescratch,          {.v = spterm } },
-	// { MODKEY,                       XK_n,          togglescratch,          {.v = spnotes } },
+	{ MODKEY,                       XK_n,          togglescratch,          {.v = spnotes } },
 	// { MODKEY|ControlMask,           XK_grave,      setscratch,             {.v = scratchpadcmd } },
 	// { MODKEY|ShiftMask,             XK_grave,      removescratch,          {.v = scratchpadcmd } },
 	#elif SCRATCHPADS_PATCH
@@ -1324,8 +1323,8 @@ static Key keys[] = {
 	TAGKEYS(                        XK_8,                                  7)
 	TAGKEYS(                        XK_9,                                  8)
 
-	{ MODKEY,                       XK_slash,      spawn,                  SHCMD("dmenu-emoji") },
-	{ MODKEY|ShiftMask,             XK_slash,      spawn,                  SHCMD("dmenu-emoji -c") },
+	{ MODKEY,                       XK_slash,      spawn,                  SHCMD("emoji-menu") },
+	{ MODKEY|ShiftMask,             XK_slash,      spawn,                  SHCMD("emoji-menu -c") },
 	{ MODKEY,                       XK_c,          spawn,                  SHCMD("rofi-calc") },
 	{ MODKEY,                       XK_Escape,     spawn,                  SHCMD("sysact")},
 	{ MODKEY,                       XK_p,          spawn,                  SHCMD("sysprofile --cpu") },
@@ -1346,8 +1345,8 @@ static Key keys[] = {
 	// Screenshots
 	{ 0,                            XK_Print,      spawn,                  SHCMD("snip full clip") },
 	{ ShiftMask,                    XK_Print,      spawn,                  SHCMD("snip prompt") },
-	{ MODKEY,                       XK_Print,      spawn,                  SHCMD("snip full") },
-	{ MODKEY,                       XK_s,          spawn,                  SHCMD("snip sel") },
+	{ MODKEY,                       XK_Print,      spawn,                  SHCMD("snip full file") },
+	{ MODKEY,                       XK_s,          spawn,                  SHCMD("snip sel file") },
 	{ MODKEY|ShiftMask,             XK_s,          spawn,                  SHCMD("snip sel clip") },
 	{ MODKEY|ControlMask,           XK_s,          spawn,                  SHCMD("flameshot gui") },
 	{ MODKEY|ShiftMask,             XK_r,          spawn,                  SHCMD("screenrecord") },
@@ -1355,13 +1354,15 @@ static Key keys[] = {
 	{ MODKEY,                       XK_F4,         spawn,                  SHCMD("terminal -e pulsemixer; pkill -RTMIN+8 $STATUSBAR") },
 	{ MODKEY,                       XK_F11,        spawn,                  SHCMD("mpv --no-cache --no-osc --no-input-default-bindings --profile=low-latency --input-conf=/dev/null --title=webcam $(ls /dev/video[0,2,4,6,8] | tail -n 1)") },
 
-	{ MODKEY|ControlMask,           XK_Up,         spawn,                  SHCMD("light -A 5") },
-	{ MODKEY|ControlMask,           XK_Down,       spawn,                  SHCMD("light -U 5") },
+	{ MODKEY|ControlMask,           XK_Up,         spawn,                  SHCMD(" brightnessctl -q set +5%") },
+	{ MODKEY|ControlMask,           XK_Down,       spawn,                  SHCMD(" brightnessctl -q set 5%-") },
 	{ MODKEY|ControlMask,           XK_Right,      spawn,                  SHCMD("asusctl -n") },
 	{ MODKEY|ControlMask,           XK_Left,       spawn,                  SHCMD("asusctl -p") },
 
 	{ MODKEY,                       XK_m,          spawn,                  SHCMD("mountmate") },
 	{ MODKEY|ShiftMask,             XK_m,          spawn,                  SHCMD("mountmate -u") },
+
+	{ MODKEY,                       XK_t,          spawn,                  SHCMD("timers") },
 
 	#define WPCTL(cmd, arg) SHCMD("wpctl " cmd " @DEFAULT_AUDIO_SINK@ " arg "; pkill -RTMIN+8 $STATUSBAR")
 	{ 0,                            XF86XK_AudioMute,         spawn,       WPCTL("set-mute", "toggle") },
@@ -1379,8 +1380,8 @@ static Key keys[] = {
 	{ 0,                            XF86XK_Explorer,          spawn,       SHCMD("terminal -e $FILE_MANAGER") },
 	{ 0,                            XF86XK_Calculator,        spawn,       SHCMD("rofi-calc") },
 	{ 0,                            XF86XK_ScreenSaver,       spawn,       SHCMD("slock & xset dpms force off; musicctl pause") },
-	{ 0,                            XF86XK_MonBrightnessUp,   spawn,       SHCMD("light -A 5") },
-	{ 0,                            XF86XK_MonBrightnessDown, spawn,       SHCMD("light -U 5") },
+	{ 0,                            XF86XK_MonBrightnessUp,   spawn,       SHCMD(" brightnessctl -q set +5%") },
+	{ 0,                            XF86XK_MonBrightnessDown, spawn,       SHCMD(" brightnessctl -q set 5%-") },
 	{ 0,                            XF86XK_TouchpadToggle,    spawn,       SHCMD("toggle-touchpad") },
 };
 
