@@ -1,5 +1,9 @@
 /* See LICENSE file for copyright and license details. */
 
+/* Helper macros for spawning commands */
+#define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
+#define CMD(...)   { .v = (const char*[]){ __VA_ARGS__, NULL } }
+
 /* appearance */
 #if ROUNDED_CORNERS_PATCH
 static const unsigned int borderpx       = 0;   /* border pixel of windows */
@@ -7,6 +11,12 @@ static const int corner_radius           = 10;
 #else
 static const unsigned int borderpx       = 1;   /* border pixel of windows */
 #endif // ROUNDED_CORNERS_PATCH
+#if BAR_BORDER_PATCH
+/* This allows the bar border size to be explicitly set separately from borderpx.
+ * If left as 0 then it will default to the borderpx value of the monitor and will
+ * automatically update with setborderpx. */
+static const unsigned int barborderpx    = 0;  /* border pixel of bar */
+#endif // BAR_BORDER_PATCH
 static const unsigned int snap           = 32;  /* snap pixel */
 #if SWALLOW_PATCH
 static const int swallowfloating         = 0;   /* 1 means swallow floating windows by default */
@@ -440,6 +450,13 @@ static char *statuscolors[][ColCount] = {
 static const char *layoutmenu_cmd = "layoutmenu.sh";
 #endif
 
+#if BAR_LAUNCHER_PATCH
+static const Launcher launchers[] = {
+	/* icon to display      command        */
+	{ "surf",               CMD("surf", "duckduckgo.com") },
+};
+#endif // BAR_LAUNCHER_PATCH
+
 #if COOL_AUTOSTART_PATCH
 static const char *const autostart[] = {
 	"st", NULL,
@@ -589,14 +606,17 @@ static const BarRule barrules[] = {
 	#if BAR_STATUSBUTTON_PATCH
 	{ -1,        0,     BAR_ALIGN_LEFT,   width_stbutton,           draw_stbutton,          click_stbutton,          NULL,                    "statusbutton" },
 	#endif // BAR_STATUSBUTTON_PATCH
+	#if BAR_LAUNCHER_PATCH
+	{ -1,        0,     BAR_ALIGN_LEFT,   width_launcher,           draw_launcher,          click_launcher,          NULL,                    "launcher" },
+	#endif // BAR_LAUNCHER_PATCH
 	#if BAR_POWERLINE_TAGS_PATCH
-	{  0,        0,     BAR_ALIGN_LEFT,   width_pwrl_tags,          draw_pwrl_tags,         click_pwrl_tags,         NULL,                    "powerline_tags" },
+	{  0,        0,     BAR_ALIGN_LEFT,   width_pwrl_tags,          draw_pwrl_tags,         click_pwrl_tags,         hover_pwrl_tags,         "powerline_tags" },
 	#endif // BAR_POWERLINE_TAGS_PATCH
 	#if BAR_TAGS_PATCH
 	{ -1,        0,     BAR_ALIGN_LEFT,   width_tags,               draw_tags,              click_tags,              hover_tags,              "tags" },
 	#endif // BAR_TAGS_PATCH
 	#if BAR_TAGLABELS_PATCH
-	{ -1,        0,     BAR_ALIGN_LEFT,   width_taglabels,          draw_taglabels,         click_taglabels,         NULL,                    "taglabels" },
+	{ -1,        0,     BAR_ALIGN_LEFT,   width_taglabels,          draw_taglabels,         click_taglabels,         hover_taglabels,         "taglabels" },
 	#endif // BAR_TAGLABELS_PATCH
 	#if BAR_TAGGRID_PATCH
 	{ -1,        0,     BAR_ALIGN_LEFT,   width_taggrid,            draw_taggrid,           click_taggrid,           NULL,                    "taggrid" },
@@ -888,9 +908,6 @@ static const char *xkb_layouts[]  = {
 #define HOLDKEY 0 // replace 0 with the keysym to activate holdbar
 #endif // BAR_HOLDBAR_PATCH
 
-/* helper for spawning shell commands in the pre dwm-5.0 fashion */
-#define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
-
 /* commands */
 #if !NODMENU_PATCH
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
@@ -949,12 +966,15 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_s,          rioresize,              {0} },
 	#endif // RIODRAW_PATCH
 	{ MODKEY,                       XK_b,          togglebar,              {0} },
+	#if TOGGLETOPBAR_PATCH
+	{ MODKEY|ShiftMask,             XK_b,          toggletopbar,           {0} },
+	#endif // TOGGLETOPBAR_PATCH
 	#if TAB_PATCH
 	{ MODKEY|ControlMask,           XK_b,          tabmode,                {-1} },
 	#endif // TAB_PATCH
-	#if FOCUSMASTER_PATCH
+	#if FOCUSMASTER_PATCH || FOCUSMASTER_RETURN_PATCH
 	{ MODKEY|ControlMask,           XK_space,      focusmaster,            {0} },
-	#endif // FOCUSMASTER_PATCH
+	#endif // FOCUSMASTER_PATCH / FOCUSMASTER_RETURN_PATCH
 	#if STACKER_PATCH
 	STACKKEYS(MODKEY,                              focus)
 	STACKKEYS(MODKEY|ShiftMask,                    push)
@@ -968,6 +988,12 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_Up,         focusdir,               {.i = 2 } }, // up
 	{ MODKEY,                       XK_Down,       focusdir,               {.i = 3 } }, // down
 	#endif // FOCUSDIR_PATCH
+	#if PLACEDIR_PATCH
+	{ MODKEY|ControlMask,           XK_Left,       placedir,               {.i = 0 } }, // left
+	{ MODKEY|ControlMask,           XK_Right,      placedir,               {.i = 1 } }, // right
+	{ MODKEY|ControlMask,           XK_Up,         placedir,               {.i = 2 } }, // up
+	{ MODKEY|ControlMask,           XK_Down,       placedir,               {.i = 3 } }, // down
+	#endif // PLACEDIR_PATCH
 	#if SWAPFOCUS_PATCH && PERTAG_PATCH
 	{ MODKEY,                       XK_s,          swapfocus,              {.i = -1 } },
 	#endif // SWAPFOCUS_PATCH
@@ -1075,8 +1101,8 @@ static const Key keys[] = {
 	{ MODKEY|Mod4Mask,              XK_backslash,  shiftviewclients,       { .i = +1 } },
 	#endif // SHIFTVIEW_CLIENTS_PATCH
 	#if SHIFTBOTH_PATCH
-	{ MODKEY|ControlMask,           XK_Left,       shiftboth,              { .i = -1 } }, // note keybinding conflict with focusadjacenttag tagandviewtoleft
-	{ MODKEY|ControlMask,           XK_Right,      shiftboth,              { .i = +1 } }, // note keybinding conflict with focusadjacenttag tagandviewtoright
+	{ MODKEY|ControlMask,           XK_Left,       shiftboth,              { .i = -1 } }, // note keybinding conflict with focusadjacenttag tagandviewtoleft placedir
+	{ MODKEY|ControlMask,           XK_Right,      shiftboth,              { .i = +1 } }, // note keybinding conflict with focusadjacenttag tagandviewtoright placedir
 	#endif // SHIFTBOTH_PATCH
 	#if SHIFTSWAPTAGS_PATCH && SWAPTAGS_PATCH
 	{ MODKEY|Mod4Mask|ShiftMask,    XK_Left,       shiftswaptags,          { .i = -1 } },
@@ -1182,8 +1208,8 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_Right,      viewtoright,            {0} }, // note keybinding conflict with focusdir
 	{ MODKEY|ShiftMask,             XK_Left,       tagtoleft,              {0} }, // note keybinding conflict with shifttag
 	{ MODKEY|ShiftMask,             XK_Right,      tagtoright,             {0} }, // note keybinding conflict with shifttag
-	{ MODKEY|ControlMask,           XK_Left,       tagandviewtoleft,       {0} },
-	{ MODKEY|ControlMask,           XK_Right,      tagandviewtoright,      {0} },
+	{ MODKEY|ControlMask,           XK_Left,       tagandviewtoleft,       {0} }, // note keybinding conflict with placedir
+	{ MODKEY|ControlMask,           XK_Right,      tagandviewtoright,      {0} }, // note keybinding conflict with placedir
 	#endif // FOCUSADJACENTTAG_PATCH
 	#if TAGALL_PATCH
 	{ MODKEY|ShiftMask,             XK_F1,         tagall,                 {.v = "F1"} },
@@ -1222,8 +1248,8 @@ static const Key keys[] = {
 	#if BAR_TAGGRID_PATCH
 	{ MODKEY|ControlMask,           XK_Up,         switchtag,              { .ui = SWITCHTAG_UP    | SWITCHTAG_VIEW } },
 	{ MODKEY|ControlMask,           XK_Down,       switchtag,              { .ui = SWITCHTAG_DOWN  | SWITCHTAG_VIEW } },
-	{ MODKEY|ControlMask,           XK_Right,      switchtag,              { .ui = SWITCHTAG_RIGHT | SWITCHTAG_VIEW } },
-	{ MODKEY|ControlMask,           XK_Left,       switchtag,              { .ui = SWITCHTAG_LEFT  | SWITCHTAG_VIEW } },
+	{ MODKEY|ControlMask,           XK_Right,      switchtag,              { .ui = SWITCHTAG_RIGHT | SWITCHTAG_VIEW } }, // note keybinding conflict with placedir
+	{ MODKEY|ControlMask,           XK_Left,       switchtag,              { .ui = SWITCHTAG_LEFT  | SWITCHTAG_VIEW } }, // note keybinding conflict with placedir
 	{ MODKEY|Mod4Mask,              XK_Up,         switchtag,              { .ui = SWITCHTAG_UP    | SWITCHTAG_TAG | SWITCHTAG_VIEW } },
 	{ MODKEY|Mod4Mask,              XK_Down,       switchtag,              { .ui = SWITCHTAG_DOWN  | SWITCHTAG_TAG | SWITCHTAG_VIEW } },
 	{ MODKEY|Mod4Mask,              XK_Right,      switchtag,              { .ui = SWITCHTAG_RIGHT | SWITCHTAG_TAG | SWITCHTAG_VIEW } },
@@ -1441,6 +1467,9 @@ static const Signal signals[] = {
 	{ "focusstack",              focusstack },
 	{ "setmfact",                setmfact },
 	{ "togglebar",               togglebar },
+	#if TOGGLETOPBAR_PATCH
+	{ "toggletopbar",            toggletopbar },
+	#endif // TOGGLETOPBAR_PATCH
 	{ "incnmaster",              incnmaster },
 	{ "togglefloating",          togglefloating },
 	{ "focusmon",                focusmon },
@@ -1639,6 +1668,9 @@ static IPCCommand ipccommands[] = {
 	IPCCOMMAND( tag, 1, {ARG_TYPE_UINT} ),
 	IPCCOMMAND( tagmon, 1, {ARG_TYPE_UINT} ),
 	IPCCOMMAND( togglebar, 1, {ARG_TYPE_NONE} ),
+	#if TOGGLETOPBAR_PATCH
+	IPCCOMMAND( toggletopbar, 1, {ARG_TYPE_NONE} ),
+	#endif // TOGGLETOPBAR_PATCH
 	IPCCOMMAND( togglefloating, 1, {ARG_TYPE_NONE} ),
 	IPCCOMMAND( toggletag, 1, {ARG_TYPE_UINT} ),
 	IPCCOMMAND( toggleview, 1, {ARG_TYPE_UINT} ),

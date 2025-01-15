@@ -24,6 +24,9 @@
 #if BAR_HOLDBAR_PATCH
 #include "bar_holdbar.h"
 #endif
+#if BAR_LAUNCHER_PATCH
+#include "bar_launcher.h"
+#endif
 #if BAR_LTSYMBOL_PATCH
 #include "bar_ltsymbol.h"
 #endif
@@ -154,7 +157,10 @@
 #if FOCUSADJACENTTAG_PATCH
 #include "focusadjacenttag.h"
 #endif
-#if FOCUSMASTER_PATCH
+#if FOCUSFOLLOWMOUSE_PATCH
+#include "focusfollowmouse.h"
+#endif
+#if FOCUSMASTER_PATCH || FOCUSMASTER_RETURN_PATCH
 #include "focusmaster.h"
 #endif
 #if FOCUSURGENT_PATCH
@@ -203,6 +209,9 @@
 #endif
 #if PERTAG_PATCH
 #include "pertag.h"
+#endif
+#if PLACEDIR_PATCH
+#include "placedir.h"
 #endif
 #if PLACEMOUSE_PATCH
 #include "placemouse.h"
@@ -311,6 +320,9 @@
 #endif
 #if TOGGLEFULLSCREEN_PATCH
 #include "togglefullscreen.h"
+#endif
+#if TOGGLETOPBAR_PATCH
+#include "toggletopbar.h"
 #endif
 #if TRANSFER_PATCH
 #include "transfer.h"

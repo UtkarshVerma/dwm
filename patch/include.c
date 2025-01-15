@@ -21,6 +21,9 @@
 #if COMBO_PATCH
 #include "combo.c"
 #endif
+#if BAR_LAUNCHER_PATCH
+#include "bar_launcher.c"
+#endif
 #if BAR_LTSYMBOL_PATCH
 #include "bar_ltsymbol.c"
 #endif
@@ -151,7 +154,10 @@
 #if FOCUSDIR_PATCH
 #include "focusdir.c"
 #endif
-#if FOCUSMASTER_PATCH
+#if FOCUSFOLLOWMOUSE_PATCH
+#include "focusfollowmouse.c"
+#endif
+#if FOCUSMASTER_PATCH || FOCUSMASTER_RETURN_PATCH
 #include "focusmaster.c"
 #endif
 #if FOCUSURGENT_PATCH
@@ -204,6 +210,9 @@
 #endif
 #if PERTAG_PATCH
 #include "pertag.c"
+#endif
+#if PLACEDIR_PATCH
+#include "placedir.c"
 #endif
 #if PLACEMOUSE_PATCH
 #include "placemouse.c"
@@ -309,6 +318,9 @@
 #endif
 #if TOGGLEFULLSCREEN_PATCH
 #include "togglefullscreen.c"
+#endif
+#if TOGGLETOPBAR_PATCH
+#include "toggletopbar.c"
 #endif
 #if TRANSFER_PATCH
 #include "transfer.c"
