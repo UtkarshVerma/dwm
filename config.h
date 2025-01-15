@@ -534,6 +534,11 @@ static const Rule rules[] = {
 	RULE(.class = "vesktop", .tags = TAG(9))
 	RULE(.title = "wlroots - X11-1", .tags = TAG(2))
 
+	// There's no way to distinguish between torrent download pop-ups and the
+	// main window, so do negative pattern matching.
+	RULE(.class = "qBittorrent", .isfloating = 1, .iscentered = 1)
+	RULE(.class = "qBittorrent", .title = "qBittorrent v", .tags = TAG(7))
+
 	#if RENAMED_SCRATCHPADS_PATCH
 	RULE(.instance = "spterm", .scratchkey = '~', .isfloating = 1, .iscentered = 1)
 	RULE(.class = "obsidian", .scratchkey = 'n')
