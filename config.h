@@ -420,9 +420,11 @@ static const char *const autostart[] = {
 };
 #endif // COOL_AUTOSTART_PATCH
 
+#define NOTES_VAULT "personal"
 #if RENAMED_SCRATCHPADS_PATCH
 static const char *spterm[] = {"~", "terminal", "-n", "spterm", "-g", "80x23", NULL};
-static const char *spnotes[] = {"n", "obsidian", NULL};
+static const char *spnotes[] = {"n", "xdg-open", "obsidian://open?vault=" NOTES_VAULT, NULL};
+static const char *spmisc[] = {".", NULL};
 #elif SCRATCHPADS_PATCH
 const char *spcmd1[] = {"st", "-n", "spterm", "-g", "120x34", NULL };
 static Sp scratchpads[] = {
@@ -1062,8 +1064,8 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_backslash,  shiftview,              { .i = +1 } },
 	#endif // SHIFTVIEW_PATCH
 	#if SHIFTVIEW_CLIENTS_PATCH
-	{ MODKEY,                       XK_semicolon,  shiftviewclients,       { .i = -1 } },
-	{ MODKEY,                       XK_apostrophe, shiftviewclients,       { .i = +1 } },
+	{ MODKEY|Mod4Mask,              XK_Tab,        shiftviewclients,       { .i = -1 } },
+	{ MODKEY|Mod4Mask,              XK_backslash,  shiftviewclients,       { .i = +1 } },
 	#endif // SHIFTVIEW_CLIENTS_PATCH
 	#if SHIFTBOTH_PATCH
 	{ MODKEY|ControlMask,           XK_Left,       shiftboth,              { .i = -1 } }, // note keybinding conflict with focusadjacenttag tagandviewtoleft
@@ -1083,7 +1085,6 @@ static Key keys[] = {
 	#if SELFRESTART_PATCH
 	{ MODKEY|ShiftMask,             XK_r,          self_restart,           {0} },
 	#endif // SELFRESTART_PATCH
-	// { MODKEY|ShiftMask,             XK_q,          quit,                   {0} },
 	#if RESTARTSIG_PATCH
 	{ MODKEY|ShiftMask,             XK_c,          quit,                   {1} },
 	#endif // RESTARTSIG_PATCH
@@ -1131,8 +1132,9 @@ static Key keys[] = {
 	#if RENAMED_SCRATCHPADS_PATCH
 	{ MODKEY,                       XK_grave,      togglescratch,          {.v = spterm } },
 	{ MODKEY,                       XK_n,          togglescratch,          {.v = spnotes } },
-	// { MODKEY|ControlMask,           XK_grave,      setscratch,             {.v = scratchpadcmd } },
-	// { MODKEY|ShiftMask,             XK_grave,      removescratch,          {.v = scratchpadcmd } },
+	{ MODKEY,                       XK_apostrophe, togglescratch,          {.v = spmisc } },
+	{ MODKEY|ControlMask,           XK_apostrophe, setscratch,             {.v = spmisc } },
+	{ MODKEY|ShiftMask,             XK_apostrophe, removescratch,          {.v = spmisc } },
 	#elif SCRATCHPADS_PATCH
 	{ MODKEY,                       XK_grave,      togglescratch,          {.ui = 0 } },
 	{ MODKEY|ControlMask,           XK_grave,      setscratch,             {.ui = 0 } },
@@ -1170,12 +1172,12 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_comma,      tagmon,                 {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period,     tagmon,                 {.i = +1 } },
 	#if FOCUSADJACENTTAG_PATCH
-	{ MODKEY,                       XK_Left,       viewtoleft,             {0} }, // note keybinding conflict with focusdir
-	{ MODKEY,                       XK_Right,      viewtoright,            {0} }, // note keybinding conflict with focusdir
-	{ MODKEY|ShiftMask,             XK_Left,       tagtoleft,              {0} }, // note keybinding conflict with shifttag
-	{ MODKEY|ShiftMask,             XK_Right,      tagtoright,             {0} }, // note keybinding conflict with shifttag
-	{ MODKEY|ControlMask,           XK_Left,       tagandviewtoleft,       {0} },
-	{ MODKEY|ControlMask,           XK_Right,      tagandviewtoright,      {0} },
+	{ MODKEY,                       XK_bracketleft,       viewtoleft,             {0} }, // note keybinding conflict with focusdir
+	{ MODKEY,                       XK_bracketright,      viewtoright,            {0} }, // note keybinding conflict with focusdir
+	{ MODKEY|ShiftMask,             XK_bracketleft,       tagtoleft,              {0} }, // note keybinding conflict with shifttag
+	{ MODKEY|ShiftMask,             XK_bracketright,      tagtoright,             {0} }, // note keybinding conflict with shifttag
+	{ MODKEY|ControlMask,           XK_bracketleft,       tagandviewtoleft,       {0} },
+	{ MODKEY|ControlMask,           XK_bracketright,      tagandviewtoright,      {0} },
 	#endif // FOCUSADJACENTTAG_PATCH
 	#if TAGALL_PATCH
 	{ MODKEY|ShiftMask,             XK_F1,         tagall,                 {.v = "F1"} },
@@ -1354,8 +1356,8 @@ static Key keys[] = {
 	{ MODKEY,                       XK_F4,         spawn,                  SHCMD("terminal -e pulsemixer; pkill -RTMIN+8 $STATUSBAR") },
 	{ MODKEY,                       XK_F11,        spawn,                  SHCMD("mpv --no-cache --no-osc --no-input-default-bindings --profile=low-latency --input-conf=/dev/null --title=webcam $(ls /dev/video[0,2,4,6,8] | tail -n 1)") },
 
-	{ MODKEY|ControlMask,           XK_Up,         spawn,                  SHCMD(" brightnessctl -q set +5%") },
-	{ MODKEY|ControlMask,           XK_Down,       spawn,                  SHCMD(" brightnessctl -q set 5%-") },
+	{ MODKEY|ControlMask,           XK_Up,         spawn,                  SHCMD("brightnessctl -q set +5%") },
+	{ MODKEY|ControlMask,           XK_Down,       spawn,                  SHCMD("brightnessctl -q set 5%-") },
 	{ MODKEY|ControlMask,           XK_Right,      spawn,                  SHCMD("asusctl -n") },
 	{ MODKEY|ControlMask,           XK_Left,       spawn,                  SHCMD("asusctl -p") },
 

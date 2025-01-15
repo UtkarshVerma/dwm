@@ -629,7 +629,7 @@
  * the right tag.
  * http://dwm.suckless.org/patches/focusadjacenttag/
  */
-#define FOCUSADJACENTTAG_PATCH 0
+#define FOCUSADJACENTTAG_PATCH 1
 
 /* Allows focusing on clients based on direction (up, down, left, right) instead of client order.
  * https://github.com/bakkeby/patches/wiki/focusdir/
@@ -1027,7 +1027,7 @@
 /* This variant of the shiftview patch adds left and right circular shift through tags,
  * but skips tags where there are no clients.
  */
-#define SHIFTVIEW_CLIENTS_PATCH 1
+#define SHIFTVIEW_CLIENTS_PATCH 0
 
 /* This patch makes dwm obey even "soft" sizehints for new clients. Any window
  * that requests a specific initial size will be floated and set to that size.
