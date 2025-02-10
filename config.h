@@ -1371,6 +1371,8 @@ static Key keys[] = {
 
 	{ MODKEY,                       XK_t,          spawn,                  SHCMD("timers") },
 
+	{ MODKEY,                       XK_r,          spawn,                  SHCMD("pkill -USR1 redshift") },
+
 	#define WPCTL(cmd, arg) SHCMD("wpctl " cmd " @DEFAULT_AUDIO_SINK@ " arg "; pkill -RTMIN+8 $STATUSBAR")
 	{ 0,                            XF86XK_AudioMute,         spawn,       WPCTL("set-mute", "toggle") },
 	{ 0,                            XF86XK_AudioRaiseVolume,  spawn,       WPCTL("set-volume --limit=1.0", "3%+") },
