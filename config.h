@@ -1341,21 +1341,13 @@ static Key keys[] = {
 	{ MODKEY,                       XK_e,          spawn,                  SHCMD("terminal -e $FILE_MANAGER") },
 	{ MODKEY|ShiftMask,             XK_e,          spawn,                  SHCMD("terminal -e $SYSTEM_MONITOR") },
 
-	// Music (local)
+	// Music
 	{ MODKEY|ControlMask|ShiftMask, XK_j,          spawn,                  SHCMD("musicctl seek -10") },
 	{ MODKEY|ControlMask,           XK_j,          spawn,                  SHCMD("musicctl prev") },
 	{ MODKEY|ControlMask,           XK_k,          spawn,                  SHCMD("musicctl toggle") },
 	{ MODKEY|ControlMask|ShiftMask, XK_k,          spawn,                  SHCMD("musicctl stop") },
 	{ MODKEY|ControlMask,           XK_l,          spawn,                  SHCMD("musicctl next") },
 	{ MODKEY|ControlMask|ShiftMask, XK_l,          spawn,                  SHCMD("musicctl seek +10") },
-
-	// Music (remote: kdeconnect)
-	{ MODKEY|Mod1Mask|ControlMask|ShiftMask, XK_j, spawn,                  SHCMD("musicctl --remote seek -10") },
-	{ MODKEY|Mod1Mask|ControlMask,           XK_j, spawn,                  SHCMD("musicctl --remote prev") },
-	{ MODKEY|Mod1Mask|ControlMask,           XK_k, spawn,                  SHCMD("musicctl --remote toggle") },
-	{ MODKEY|Mod1Mask|ControlMask|ShiftMask, XK_k, spawn,                  SHCMD("musicctl --remote stop") },
-	{ MODKEY|Mod1Mask|ControlMask,           XK_l, spawn,                  SHCMD("musicctl --remote next") },
-	{ MODKEY|Mod1Mask|ControlMask|ShiftMask, XK_l, spawn,                  SHCMD("musicctl --remote seek +10") },
 
 	// Screenshots
 	{ 0,                            XK_Print,      spawn,                  SHCMD("snip full clip") },
