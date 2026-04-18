@@ -532,6 +532,7 @@ static const Rule rules[] = {
 	RULE(.class = "Code", .tags = TAG(2))
 	RULE(.class = "Spotify", .tags = TAG(8))
 	RULE(.class = "vesktop", .tags = TAG(9))
+	RULE(.class = "discord", .tags = TAG(9))
 	RULE(.title = "wlroots - X11-1", .tags = TAG(2))
 
 	// There's no way to distinguish between torrent download pop-ups and the
@@ -901,13 +902,9 @@ static const char *xkb_layouts[]  = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 #endif // NODMENU_PATCH
 static const char *dmenucmd[] = {
-	"menu-run",
-	#if !NODMENU_PATCH
-	"-m", dmenumon,
-	#endif // NODMENU_PATCH
-	#if BAR_DMENUMATCHTOP_PATCH
-	topbar ? NULL : "-b",
-	#endif // BAR_DMENUMATCHTOP_PATCH
+	"j4-dmenu-desktop",
+	"-d",
+	"menu -p Run: -i",
 	NULL
 };
 static const char *termcmd[]  = { "terminal", NULL };
